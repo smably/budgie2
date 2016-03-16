@@ -1,0 +1,20 @@
+[
+    {
+        "id": "00001",
+        "isSource": true,
+        "isSink": false,
+        "label": "Kelly Services"
+    },
+    {
+        "id": "00002",
+        "isSource": true,
+        "isDestination": true,
+        "label": "Primary Account"
+    },
+    {
+        "id": "00003",
+        "isSource": true,
+        "isDestination": true,
+        "label": "Secondary Account"
+    }
+]
