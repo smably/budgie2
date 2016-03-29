@@ -20,5 +20,8 @@ module.exports = {
             loader: 'json'
         }
         ]
-    }
+    },
+    plugins: [
+        new webpack.ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/)
+    ]
 };

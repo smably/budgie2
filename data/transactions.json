@@ -1,13 +1,15 @@
 [
     {
         "id": "00001",
+        "amount": 98200,
         "source": "00001",
         "sink": "00002",
-        "label": "Test transaction from Kelly to Primary",
+        "label": "Test transaction from Paycheque to Primary",
         "date": "2016-03-15T00:00:00.000Z"
     },
     {
         "id": "00002",
+        "amount": 14000,
         "source": "00002",
         "sink": "00003",
         "label": "Test transaction from Primary to Secondary",

@@ -1,0 +1,42 @@
+html {
+    font: 14px sans-serif;
+}
+
+#data {
+    font: 1rem 'Inconsolata', monospace;
+    min-width: 900px;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+#data thead tr {
+    font-weight: bold;
+    border-bottom: #88CCFF 2px solid;
+}
+
+#data tbody tr:nth-child(even) {
+    background-color: #DDF8FF;
+}
+
+#data td {
+    margin: 0;
+    border: none;
+}
+
+td.amount {
+    text-align: right;
+}
+
+#stateToggles button {
+    background: none;
+    padding: 4px 8px;
+    border: #88CCFF 2px solid;
+    border-radius: 4px;
+    margin: 2px 4px;
+    font-size: 0.9rem;
+}
+
+#stateToggles button:focus {
+    outline: none;
+    background-color: #DDF8FF;
+}

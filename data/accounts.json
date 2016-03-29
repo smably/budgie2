@@ -3,18 +3,18 @@
         "id": "00001",
         "isSource": true,
         "isSink": false,
-        "label": "Kelly Services"
+        "label": "Paycheque"
     },
     {
         "id": "00002",
         "isSource": true,
-        "isDestination": true,
+        "isSink": true,
         "label": "Primary Account"
     },
     {
         "id": "00003",
         "isSource": true,
-        "isDestination": true,
+        "isSink": true,
         "label": "Secondary Account"
     }
 ]
