@@ -20,7 +20,7 @@ class App extends React.Component {
 
         this.state = {
             accounts: accountData,
-            transactions: transactionData,
+            transactions: this.expandRecurrences(transactionData, recurrenceData),
             recurrences: recurrenceData,
             view: Constants.VIEWS.transactions
         };
@@ -28,8 +28,23 @@ class App extends React.Component {
 
     componentDidMount() {
         console.log(...this.state);
-        let rule = rrulestr(this.state.recurrences[0].rruleset.join("\n"))
-        console.log(rule.all().map(date => date.toJSON()));
+    }
+
+    expandRecurrences(transactions, recurrences) {
+        let rule, transaction, occurrences = transactions, occurrence;
+        recurrences.forEach(recurrence => {
+            rule = rrulestr(recurrence.rruleset.join("\n"));
+            console.log(transactions);
+            transaction = transactions.filter(t => t.id === recurrence.transaction)[0];
+            occurrences = occurrences.concat(rule.all().map(date => {
+                occurrence = Object.assign({}, transaction);
+                occurrence.date = date.toJSON();
+                occurrence.id = occurrence.id + "_" + occurrence.date;
+                return occurrence;
+            }));
+        });
+
+        return occurrences.sort((a, b) => a.date.localeCompare(b.date));
     }
 
     displayAccounts() {
@@ -49,10 +64,10 @@ class App extends React.Component {
 
         switch (this.state.view) {
             case Constants.VIEWS.accounts:
-                mainContent = <Accounts accounts={this.state.accounts} transactions={this.state.transactions}/>;
+                mainContent = <Accounts accounts={this.state.accounts} />;
                 break;
             case Constants.VIEWS.transactions:
-                mainContent = <Transactions accounts={this.state.accounts} transactions={this.state.transactions}/>;
+                mainContent = <Transactions accounts={this.state.accounts} transactions={this.state.transactions} recurrences={this.state.recurrences} />;
                 break;
             default:
                 mainContent = <div class="error">View does not exist.</div>;

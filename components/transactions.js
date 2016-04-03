@@ -37,7 +37,8 @@ class Transactions extends React.Component {
 
 Transactions.propTypes = {
     accounts: React.PropTypes.array,
-    transactions: React.PropTypes.array
+    transactions: React.PropTypes.array,
+    recurrences: React.PropTypes.array
 }
 
 export default Transactions;

@@ -29,8 +29,7 @@ class Accounts extends React.Component {
 }
 
 Accounts.propTypes = {
-    accounts: React.PropTypes.array,
-    transactions: React.PropTypes.array
+    accounts: React.PropTypes.array
 }
 
 export default Accounts;
