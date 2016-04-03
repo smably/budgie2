@@ -3,6 +3,9 @@ const pastTransactions = (state, action) => {
         case 'RECEIVE_PAST_TRANSACTIONS':
             return action.transactions;
             break;
+        case 'ADD_PAST_TRANSACTION':
+            return [...state.transactions, action.transaction];
+            break;
         default:
             return state;
     }
