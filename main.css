@@ -27,7 +27,7 @@ td.amount {
     text-align: right;
 }
 
-#stateToggles button {
+button {
     background: none;
     padding: 4px 8px;
     border: #88CCFF 2px solid;
@@ -36,7 +36,7 @@ td.amount {
     font-size: 0.9rem;
 }
 
-#stateToggles button:focus {
+button:focus {
     outline: none;
     background-color: #DDF8FF;
 }

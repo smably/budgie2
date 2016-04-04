@@ -17,6 +17,7 @@ class App extends React.Component {
         // ummmm
         this.displayAccounts = this.displayAccounts.bind(this);
         this.displayTransactions = this.displayTransactions.bind(this);
+        this.addTransaction = this.addTransaction.bind(this);
 
         this.state = {
             accounts: accountData,
@@ -24,6 +25,17 @@ class App extends React.Component {
             recurrences: recurrenceData,
             view: Constants.VIEWS.transactions
         };
+    }
+
+    addTransaction(newTransaction) {
+        this.setState(oldState => {
+            let transactions = oldState.transactions;
+            transactions.push(newTransaction);
+
+            return {
+                transactions: transactions
+            };
+        });
     }
 
     componentDidMount() {
@@ -67,7 +79,11 @@ class App extends React.Component {
                 mainContent = <Accounts accounts={this.state.accounts} />;
                 break;
             case Constants.VIEWS.transactions:
-                mainContent = <Transactions accounts={this.state.accounts} transactions={this.state.transactions} recurrences={this.state.recurrences} />;
+                mainContent = <Transactions
+                    accounts={this.state.accounts}
+                    transactions={this.state.transactions}
+                    recurrences={this.state.recurrences}
+                    addTransactionCallback={this.addTransaction} />;
                 break;
             default:
                 mainContent = <div class="error">View does not exist.</div>;
