@@ -3,15 +3,15 @@ html {
 }
 
 #data {
-    font: 1rem 'Inconsolata', monospace;
-    min-width: 900px;
     border-collapse: collapse;
-    margin: 20px 0;
+    font: 1rem 'Inconsolata', monospace;
+    margin: 20px 0 0 0;
+    width: 900px;
 }
 
 #data thead tr {
-    font-weight: bold;
     border-bottom: #88CCFF 2px solid;
+    font-weight: bold;
 }
 
 #data tbody tr:nth-child(even) {
@@ -19,8 +19,8 @@ html {
 }
 
 #data td {
-    margin: 0;
     border: none;
+    margin: 0;
 }
 
 td.amount {
@@ -29,14 +29,33 @@ td.amount {
 
 button {
     background: none;
-    padding: 4px 8px;
     border: #88CCFF 2px solid;
     border-radius: 4px;
-    margin: 2px 4px;
     font-size: 0.9rem;
+    margin: 2px 4px;
+    padding: 4px 8px;
 }
 
 button:focus {
-    outline: none;
     background-color: #DDF8FF;
+    outline: none;
+}
+
+#newTransactionRow input {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+#addTransactionContainer {
+    text-align: right;
+    margin-top: -2px;
+    width: 900px;
+}
+
+#addTransactionButton {
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin: 0 1px 0 0;
+    padding-top: 0;
 }

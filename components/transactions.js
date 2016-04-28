@@ -10,12 +10,28 @@ class Transactions extends React.Component {
 
         return {
             "id": thisTransactionId,
-            "amount": 10000,
-            "source": "00002",
-            "sink": "00003",
-            "label": "Transaction #" + parseInt(thisTransactionId) + " from Primary to Secondary",
-            "date": moment().format('YYYY-MM-DD') + "00:00:00.000Z"
+            "amount": (this.newTransactionAmountField.value.replace(/[^\d.-]/g, "") * 100).toFixed(),
+            "source": this.newTransactionSourceField.value,
+            "sink": this.newTransactionDestinationField.value,
+            "label": this.newTransactionLabelField.value,
+            "date": moment(this.newTransactionDateField.value).format('YYYY-MM-DD') + "00:00:00.000Z"
         };
+    }
+
+    getPrettyDate(date) {
+        return moment(date).format('YYYY-MM-DD');
+    }
+
+    getNewTransactionRow() {
+        return (
+            <tr id="newTransactionRow">
+                <td><input type="text" placeholder="Date" value={this.getPrettyDate()} ref={(ref) => this.newTransactionDateField = ref} /></td>
+                <td><input type="text" placeholder="Label" ref={(ref) => this.newTransactionLabelField = ref}  /></td>
+                <td><input type="text" placeholder="Source" ref={(ref) => this.newTransactionSourceField = ref}  /></td>
+                <td><input type="text" placeholder="Destination" ref={(ref) => this.newTransactionDestinationField = ref}  /></td>
+                <td><input type="text" placeholder="Amount" ref={(ref) => this.newTransactionAmountField = ref}  /></td>
+            </tr>
+        );
     }
 
     render() {
@@ -25,7 +41,6 @@ class Transactions extends React.Component {
             <div>
                 <h2>Transactions</h2>
 
-                <button onClick={() => addTransaction(this.buildNewTransaction(this.props.transactions)) }>Add Transaction</button>
                 <table id="data">
                 <thead>
                     <tr>
@@ -39,15 +54,22 @@ class Transactions extends React.Component {
                 <tbody>
                     {this.props.transactions.map((transaction) =>
                         <tr key={transaction.id}>
-                            <td>{moment(transaction.date).format('YYYY-MM-DD')}</td>
+                            <td>{this.getPrettyDate(transaction.date)}</td>
                             <td>{transaction.label}</td>
                             <td>{transaction.source}</td>
                             <td>{transaction.sink}</td>
                             <td className="amount">{accounting.formatMoney(transaction.amount / 100, "$", 2)}</td>
                         </tr>
                     )}
+                    {this.getNewTransactionRow()}
                 </tbody>
                 </table>
+                <div id="addTransactionContainer">
+                    <button
+                        id="addTransactionButton"
+                        onClick={() => addTransaction(this.buildNewTransaction(this.props.transactions)) }
+                    >+</button>
+                </div>
             </div>
         );
     }
