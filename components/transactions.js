@@ -4,7 +4,23 @@ import moment from 'moment/src/moment';
 let accounting = require('accounting');
 
 class Transactions extends React.Component {
-    buildNewTransaction(transactions) {
+    static propTypes = {
+        accounts: React.PropTypes.array,
+        transactions: React.PropTypes.array,
+        recurrences: React.PropTypes.array,
+        addTransactionCallback: React.PropTypes.func
+    }
+
+    deleteTransactions = () => {
+        let selectedRows = document.querySelectorAll("#data .selected");
+        let deleteTransaction = this.props.deleteTransactionCallback;
+
+        Array.prototype.forEach.call(selectedRows, (selectedRow) => {
+            deleteTransaction(selectedRow.getAttribute("data-transaction-id"));
+        });
+    }
+
+    buildNewTransaction = (transactions) => {
         let maxTransactionId = Math.max.apply(Math, transactions.map(t => parseInt(t.id)));
         let thisTransactionId = String("0000" + (maxTransactionId + 1)).slice(-5);
 
@@ -18,11 +34,11 @@ class Transactions extends React.Component {
         };
     }
 
-    getPrettyDate(date) {
+    getPrettyDate = (date) => {
         return moment(date).format('YYYY-MM-DD');
     }
 
-    getNewTransactionRow() {
+    getNewTransactionRow = () => {
         return (
             <tr id="newTransactionRow">
                 <td><input type="text" placeholder="Date" value={this.getPrettyDate()} ref={(ref) => this.newTransactionDateField = ref} /></td>
@@ -36,6 +52,7 @@ class Transactions extends React.Component {
 
     render() {
         let addTransaction = this.props.addTransactionCallback;
+        let deleteTransactions = this.deleteTransactions;
 
         return (
             <div>
@@ -53,7 +70,9 @@ class Transactions extends React.Component {
                 </thead>
                 <tbody>
                     {this.props.transactions.map((transaction) =>
-                        <tr key={transaction.id}>
+                        <tr key={transaction.id}
+                            data-transaction-id={transaction.id}
+                            onClick={(e) => e.target.closest('tr').classList.toggle("selected")} >
                             <td>{this.getPrettyDate(transaction.date)}</td>
                             <td>{transaction.label}</td>
                             <td>{transaction.source}</td>
@@ -64,7 +83,11 @@ class Transactions extends React.Component {
                     {this.getNewTransactionRow()}
                 </tbody>
                 </table>
-                <div id="addTransactionContainer">
+                <div id="transactionOperations">
+                    <button
+                        id="deleteTransactionButton"
+                        onClick={deleteTransactions}
+                    >-</button>
                     <button
                         id="addTransactionButton"
                         onClick={() => addTransaction(this.buildNewTransaction(this.props.transactions)) }
@@ -73,13 +96,6 @@ class Transactions extends React.Component {
             </div>
         );
     }
-}
-
-Transactions.propTypes = {
-    accounts: React.PropTypes.array,
-    transactions: React.PropTypes.array,
-    recurrences: React.PropTypes.array,
-    addTransactionCallback: React.PropTypes.func
 }
 
 export default Transactions;

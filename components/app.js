@@ -11,23 +11,7 @@ import transactionData from '../data/transactions.json';
 import recurrenceData from '../data/recurrences.json';
 
 class App extends React.Component {
-    constructor() {
-        super();
-
-        // ummmm
-        this.displayAccounts = this.displayAccounts.bind(this);
-        this.displayTransactions = this.displayTransactions.bind(this);
-        this.addTransaction = this.addTransaction.bind(this);
-
-        this.state = {
-            accounts: accountData,
-            transactions: this.expandRecurrences(transactionData, recurrenceData),
-            recurrences: recurrenceData,
-            view: Constants.VIEWS.transactions
-        };
-    }
-
-    addTransaction(newTransaction) {
+    addTransaction = (newTransaction) => {
         this.setState(oldState => {
             let transactions = oldState.transactions;
             transactions.push(newTransaction);
@@ -38,11 +22,15 @@ class App extends React.Component {
         });
     }
 
-    componentDidMount() {
-        console.log(...this.state);
+    deleteTransaction = (id) => {
+        this.setState(oldState => {
+            return {
+                transactions: oldState.transactions.filter(t => t.id != id)
+            }
+        });
     }
 
-    expandRecurrences(transactions, recurrences) {
+    expandRecurrences = (transactions, recurrences) => {
         let rule, transaction, occurrences = transactions, occurrence;
         recurrences.forEach(recurrence => {
             rule = rrulestr(recurrence.rruleset.join("\n"));
@@ -59,16 +47,27 @@ class App extends React.Component {
         return occurrences.sort((a, b) => a.date.localeCompare(b.date));
     }
 
-    displayAccounts() {
+    displayAccounts = () => {
         this.setState({
             view: Constants.VIEWS.accounts
         });
     }
 
-    displayTransactions() {
+    displayTransactions = () => {
         this.setState({
             view: Constants.VIEWS.transactions
         });
+    }
+
+    state = {
+        accounts: accountData,
+        transactions: this.expandRecurrences(transactionData, recurrenceData),
+        recurrences: recurrenceData,
+        view: Constants.VIEWS.transactions
+    }
+
+    componentDidMount() {
+        console.log(...this.state);
     }
 
     render() {
@@ -83,7 +82,8 @@ class App extends React.Component {
                     accounts={this.state.accounts}
                     transactions={this.state.transactions}
                     recurrences={this.state.recurrences}
-                    addTransactionCallback={this.addTransaction} />;
+                    addTransactionCallback={this.addTransaction}
+                    deleteTransactionCallback={this.deleteTransaction} />;
                 break;
             default:
                 mainContent = <div class="error">View does not exist.</div>;

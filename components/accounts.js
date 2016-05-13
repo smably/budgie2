@@ -1,6 +1,10 @@
 import React from 'react';
 
 class Accounts extends React.Component {
+    static propTypes = {
+        accounts: React.PropTypes.array
+    }
+
     render() {
         return (
             <div>
@@ -26,10 +30,6 @@ class Accounts extends React.Component {
             </div>
         );
     }
-}
-
-Accounts.propTypes = {
-    accounts: React.PropTypes.array
 }
 
 export default Accounts;
