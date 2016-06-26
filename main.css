@@ -1,71 +1,71 @@
 html {
-    font: 14px sans-serif;
+  font: 14px sans-serif;
 }
 
 #data {
-    border-collapse: collapse;
-    font: 1rem 'Inconsolata', monospace;
-    margin: 20px 0 0 0;
-    width: 900px;
+  border-collapse: collapse;
+  font: 1rem 'Inconsolata', monospace;
+  margin: 20px 0 0 0;
+  width: 900px;
 }
 
 #data thead tr {
-    border-bottom: #88CCFF 2px solid;
-    font-weight: bold;
+  border-bottom: #88CCFF 2px solid;
+  font-weight: bold;
 }
 
 #data tbody tr:nth-child(even) {
-    background-color: #DDF8FF;
+  background-color: #DDF8FF;
 }
 
 #data tbody tr.selected {
-    background-color: #336699;
-    color: #FFF;
+  background-color: #336699;
+  color: #FFF;
 }
 
 #data td {
-    border: none;
-    margin: 0;
+  border: none;
+  margin: 0;
 }
 
 td.amount {
-    text-align: right;
+  text-align: right;
 }
 
 button {
-    background: none;
-    border: #88CCFF 2px solid;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    margin: 2px 4px;
-    padding: 4px 8px;
+  background: none;
+  border: #88CCFF 2px solid;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin: 2px 4px;
+  padding: 4px 8px;
 }
 
 button:focus {
-    background-color: #DDF8FF;
-    outline: none;
+  background-color: #DDF8FF;
+  outline: none;
 }
 
 #newTransactionRow input {
-    box-sizing: border-box;
-    width: 100%;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 #transactionOperations {
-    text-align: right;
-    margin-top: -2px;
-    width: 900px;
+  text-align: right;
+  margin-top: -2px;
+  width: 900px;
 }
 
 #addTransactionButton,
 #deleteTransactionButton {
-    border-top: none;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    margin: 0 1px 0 0;
-    padding-top: 0;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin: 0 1px 0 0;
+  padding-top: 0;
 }
 
 #deleteTransactionButton {
-    border-color: #FF4444;
+  border-color: #FF4444;
 }
