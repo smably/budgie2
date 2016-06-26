@@ -23,14 +23,19 @@ class App extends React.Component {
     console.log("in addAccount, newAccount=", newAccount);
 
     this.setState(oldState => {
-      return { accounts: Object.assign({}, oldState.accounts, newAccount) };
+      return {
+        accounts: Object.assign({}, oldState.accounts, newAccount)
+      };
     }, this.updateLocalStorage);
   }
 
   deleteAccount = (id) => {
     this.setState(oldState => {
+      let newState = Object.assign({}, oldState.accounts);
+      delete newState[id];
+
       return {
-        accounts: oldState.accounts.filter(a => a.id != id)
+        accounts: newState
       }
     }, this.updateLocalStorage);
   }

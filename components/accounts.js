@@ -14,7 +14,7 @@ class Accounts extends React.Component {
       account = this.props.accounts[accountID];
 
       return (
-        <tr key={accountID}>
+        <tr key={accountID} data-account-id={accountID} onClick={e => e.target.closest('tr').classList.toggle("selected")}>
           <td>{account.label}</td>
           <td>{account.isSource ? "Y" : "N"}</td>
           <td>{account.isSink ? "Y" : "N"}</td>
@@ -53,6 +53,14 @@ class Accounts extends React.Component {
     this.props.addAccountCallback(newAccount);
   }
 
+  deleteAccounts = () => {
+    let selectedRows = [...document.querySelectorAll("#data .selected")];
+    let deleteAccount = this.props.deleteAccountCallback;
+
+    selectedRows.forEach(selectedRow => {
+      deleteAccount(selectedRow.getAttribute("data-account-id"));
+    });
+  }
 
   render() {
     return (
