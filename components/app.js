@@ -40,6 +40,7 @@ class App extends React.Component {
 
     expandRecurrences = (transactions, recurrences) => {
         let rule, transaction, occurrence;
+
         let occurrences = Object.keys(transactions).map(transactionID =>
           Object.assign({ id: transactionID }, transactions[transactionID])
         );
@@ -47,8 +48,7 @@ class App extends React.Component {
         Object.keys(recurrences).forEach(recurrenceID => {
             let recurrence = recurrences[recurrenceID];
             rule = rrulestr(recurrence.rruleset.join("\n"));
-            console.log(transactions);
-            transaction = transactions[recurrence.transaction];
+            transaction = transactions[recurrence.transactionID];
             occurrences = occurrences.concat(rule.all().map(date => {
                 occurrence = Object.assign({}, transaction);
                 occurrence.date = date.toJSON();

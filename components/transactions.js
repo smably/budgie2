@@ -5,9 +5,9 @@ import TransactionRow from './transactionRow';
 
 class Transactions extends React.Component {
     static propTypes = {
-        accounts: React.PropTypes.array,
+        accounts: React.PropTypes.object,
         transactions: React.PropTypes.array,
-        recurrences: React.PropTypes.array,
+        recurrences: React.PropTypes.object,
         addTransactionCallback: React.PropTypes.func
     }
 
@@ -51,6 +51,7 @@ class Transactions extends React.Component {
     }
 
     render() {
+        let sourceAccount, sinkAccount;
         let getPrettyDate = this.getPrettyDate;
         let addTransaction = this.props.addTransactionCallback;
         let deleteTransactions = this.deleteTransactions;
@@ -71,7 +72,13 @@ class Transactions extends React.Component {
                 </thead>
                 <tbody>
                     {this.props.transactions.map(t =>
-                      <TransactionRow key={t.id} transaction={t} getPrettyDate={getPrettyDate}/>)}
+                        <TransactionRow
+                            key={t.id}
+                            transaction={t}
+                            source={this.props.accounts[t.source]}
+                            sink={this.props.accounts[t.sink]}
+                            getPrettyDate={getPrettyDate} />
+                    )}
                     {this.getNewTransactionRow()}
                 </tbody>
                 </table>
