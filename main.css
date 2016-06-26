@@ -46,18 +46,22 @@ button:focus {
   outline: none;
 }
 
+#newAccountRow input[type=text],
 #newTransactionRow input,
 #newTransactionRow select {
   box-sizing: border-box;
   width: 100%;
 }
 
+#accountOperations,
 #transactionOperations {
   text-align: right;
   margin-top: -2px;
   width: 960px;
 }
 
+#addAccountButton,
+#deleteAccountButton,
 #addTransactionButton,
 #deleteTransactionButton {
   border-top: none;
@@ -67,6 +71,7 @@ button:focus {
   padding-top: 0;
 }
 
+#deleteAccountButton,
 #deleteTransactionButton {
   border-color: #FF4444;
 }

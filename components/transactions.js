@@ -8,7 +8,8 @@ class Transactions extends React.Component {
     accounts: React.PropTypes.object,
     transactions: React.PropTypes.array,
     recurrences: React.PropTypes.object,
-    addTransactionCallback: React.PropTypes.func
+    addTransactionCallback: React.PropTypes.func.isRequired,
+    deleteTransactionCallback: React.PropTypes.func.isRequired,
   }
 
   deleteTransactions = () => {

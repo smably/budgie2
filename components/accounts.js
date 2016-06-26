@@ -3,6 +3,8 @@ import React from 'react';
 class Accounts extends React.Component {
   static propTypes = {
     accounts: React.PropTypes.object.isRequired,
+    addAccountCallback: React.PropTypes.func.isRequired,
+    deleteAccountCallback: React.PropTypes.func.isRequired,
   }
 
   renderAccountRows = () => {
@@ -21,6 +23,37 @@ class Accounts extends React.Component {
     });
   }
 
+  renderNewAccountRow = () => {
+    return (
+      <tr id="newAccountRow">
+        <td><input type="text" placeholder="Label" ref={ref => this.newAccountLabelField = ref} /></td>
+        <td><input type="checkbox" defaultChecked={true} ref={ref => this.newAccountSourceField = ref} /></td>
+        <td><input type="checkbox" defaultChecked={true} ref={ref => this.newAccountDestinationField = ref} /></td>
+      </tr>
+    );
+  }
+
+  buildNewAccount = () => {
+    let accountIDs = Object.keys(this.props.accounts);
+    let maxAccountID = Math.max(...accountIDs.map(id => parseInt(id)));
+    let thisAccountID = String("0000" + (maxAccountID + 1)).slice(-5);
+
+    return {
+      [thisAccountID]: {
+        "label": this.newAccountLabelField.value,
+        "isSource": this.newAccountSourceField.checked,
+        "isSink": this.newAccountDestinationField.checked,
+      }
+    };
+  }
+
+  validateAndAddAccount = () => {
+    let newAccount = this.buildNewAccount();
+
+    this.props.addAccountCallback(newAccount);
+  }
+
+
   render() {
     return (
       <div>
@@ -28,15 +61,26 @@ class Accounts extends React.Component {
         <table id="data">
           <thead>
             <tr>
-              <td>Name</td>
+              <td>Account</td>
               <td>Is Source?</td>
               <td>Is Destination?</td>
             </tr>
           </thead>
           <tbody>
             {this.renderAccountRows()}
+            {this.renderNewAccountRow()}
           </tbody>
         </table>
+        <div id="accountOperations">
+          <button
+            id="deleteAccountButton"
+            onClick={this.deleteAccounts}
+          >-</button>
+          <button
+            id="addAccountButton"
+            onClick={this.validateAndAddAccount}
+          >+</button>
+        </div>
       </div>
     );
   }

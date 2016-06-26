@@ -19,6 +19,22 @@ class App extends React.Component {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state))
   }
 
+  addAccount = (newAccount) => {
+    console.log("in addAccount, newAccount=", newAccount);
+
+    this.setState(oldState => {
+      return { accounts: Object.assign({}, oldState.accounts, newAccount) };
+    }, this.updateLocalStorage);
+  }
+
+  deleteAccount = (id) => {
+    this.setState(oldState => {
+      return {
+        accounts: oldState.accounts.filter(a => a.id != id)
+      }
+    }, this.updateLocalStorage);
+  }
+
   addTransaction = (newTransaction) => {
     this.setState(oldState => {
       let transactions = oldState.transactions;
@@ -95,15 +111,22 @@ class App extends React.Component {
 
     switch (this.state.view) {
       case Constants.VIEWS.accounts:
-        mainContent = <Accounts accounts={this.state.accounts} />;
+        mainContent = (
+          <Accounts
+            accounts={this.state.accounts}
+            addAccountCallback={this.addAccount}
+            deleteAccountCallback={this.deleteAccount} />
+        );
         break;
       case Constants.VIEWS.transactions:
-        mainContent = <Transactions
-          accounts={this.state.accounts}
-          transactions={this.state.transactions}
-          recurrences={this.state.recurrences}
-          addTransactionCallback={this.addTransaction}
-          deleteTransactionCallback={this.deleteTransaction} />;
+        mainContent = (
+          <Transactions
+            accounts={this.state.accounts}
+            transactions={this.state.transactions}
+            recurrences={this.state.recurrences}
+            addTransactionCallback={this.addTransaction}
+            deleteTransactionCallback={this.deleteTransaction} />
+        );
         break;
       default:
         mainContent = <div class="error">View does not exist.</div>;
