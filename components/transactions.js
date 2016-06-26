@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment/src/moment';
 
-let accounting = require('accounting');
+import TransactionRow from './transactionRow';
 
 class Transactions extends React.Component {
     static propTypes = {
@@ -51,6 +51,7 @@ class Transactions extends React.Component {
     }
 
     render() {
+        let getPrettyDate = this.getPrettyDate;
         let addTransaction = this.props.addTransactionCallback;
         let deleteTransactions = this.deleteTransactions;
 
@@ -69,17 +70,8 @@ class Transactions extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.transactions.map((transaction) =>
-                        <tr key={transaction.id}
-                            data-transaction-id={transaction.id}
-                            onClick={(e) => e.target.closest('tr').classList.toggle("selected")} >
-                            <td>{this.getPrettyDate(transaction.date)}</td>
-                            <td>{transaction.label}</td>
-                            <td>{transaction.source}</td>
-                            <td>{transaction.sink}</td>
-                            <td className="amount">{accounting.formatMoney(transaction.amount / 100, "$", 2)}</td>
-                        </tr>
-                    )}
+                    {this.props.transactions.map(t =>
+                      <TransactionRow key={t.id} transaction={t} getPrettyDate={getPrettyDate}/>)}
                     {this.getNewTransactionRow()}
                 </tbody>
                 </table>
