@@ -2,7 +2,24 @@ import React from 'react';
 
 class Accounts extends React.Component {
     static propTypes = {
-        accounts: React.PropTypes.array
+        accounts: React.PropTypes.object.isRequired,
+    }
+
+    renderAccountRows = () => {
+      let accountIDs = Object.keys(this.props.accounts);
+      let account;
+
+      return accountIDs.map((accountID) => {
+          account = this.props.accounts[accountID];
+
+          return (
+              <tr key={accountID}>
+                  <td>{account.label}</td>
+                  <td>{account.isSource ? "Y" : "N"}</td>
+                  <td>{account.isSink ? "Y" : "N"}</td>
+              </tr>
+          );
+      });
     }
 
     render() {
@@ -18,13 +35,7 @@ class Accounts extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.accounts.map((account) =>
-                        <tr key={account.id}>
-                            <td>{account.label}</td>
-                            <td>{account.isSource ? "Y" : "N"}</td>
-                            <td>{account.isSink ? "Y" : "N"}</td>
-                        </tr>
-                    )}
+                    {this.renderAccountRows()}
                 </tbody>
                 </table>
             </div>
