@@ -20,18 +20,56 @@ class Transactions extends React.Component {
         });
     }
 
-    buildNewTransaction = (transactions) => {
-        let maxTransactionId = Math.max.apply(Math, transactions.map(t => parseInt(t.id)));
+    buildNewTransaction = () => {
+        let maxTransactionId = Math.max.apply(Math, this.props.transactions.map(t => parseInt(t.id)));
         let thisTransactionId = String("0000" + (maxTransactionId + 1)).slice(-5);
+        let amount = this.newTransactionAmountField.value.replace(/[^\d.-]/g, "");
+        let date = moment(this.newTransactionDateField.value);
+        date = date.isValid() ? date.format('YYYY-MM-DD') + "T00:00:00.000Z" : null;
 
         return {
             "id": thisTransactionId,
-            "amount": (this.newTransactionAmountField.value.replace(/[^\d.-]/g, "") * 100).toFixed(),
+            "amount": parseInt((amount * 100).toFixed()),
             "source": this.newTransactionSourceField.value,
             "sink": this.newTransactionDestinationField.value,
             "label": this.newTransactionLabelField.value,
-            "date": moment(this.newTransactionDateField.value).format('YYYY-MM-DD') + "00:00:00.000Z"
+            "date": date
         };
+    }
+
+    validateAndAddTransaction = () => {
+        let newTransaction = this.buildNewTransaction();
+
+        let accountIDs = Object.keys(this.props.accounts);
+        let sourceIsInvalid = accountIDs.indexOf(newTransaction.source) === -1;
+        let sinkIsInvalid = accountIDs.indexOf(newTransaction.sink) === -1;
+
+        if (!newTransaction.date) {
+            console.log("Error: invalid date");
+            return;
+        }
+
+        if (newTransaction.label === "") {
+            console.log("Error: label cannot be blank");
+            return;
+        }
+
+        if (sourceIsInvalid || sinkIsInvalid) {
+            console.log("Error: invalid source or destination");
+            return;
+        }
+
+        if (newTransaction.source === newTransaction.sink) {
+            console.log("Error: source and destination cannot be the same");
+            return;
+        }
+
+        if (newTransaction.amount === 0) {
+            console.log("Error: invalid amount");
+            return;
+        }
+
+        this.props.addTransactionCallback(newTransaction);
     }
 
     getPrettyDate = (date) => {
@@ -42,10 +80,10 @@ class Transactions extends React.Component {
         return (
             <tr id="newTransactionRow">
                 <td><input type="text" placeholder="Date" defaultValue={this.getPrettyDate()} ref={ref => this.newTransactionDateField = ref} /></td>
-                <td><input type="text" placeholder="Label" ref={ref => this.newTransactionLabelField = ref}  /></td>
-                <td><input type="text" placeholder="Source" ref={ref => this.newTransactionSourceField = ref}  /></td>
-                <td><input type="text" placeholder="Destination" ref={ref => this.newTransactionDestinationField = ref}  /></td>
-                <td><input type="text" placeholder="Amount" ref={ref => this.newTransactionAmountField = ref}  /></td>
+                <td><input type="text" placeholder="Label" ref={ref => this.newTransactionLabelField = ref} /></td>
+                <td><input type="text" placeholder="Source" ref={ref => this.newTransactionSourceField = ref} /></td>
+                <td><input type="text" placeholder="Destination" ref={ref => this.newTransactionDestinationField = ref} /></td>
+                <td><input type="text" placeholder="Amount" ref={ref => this.newTransactionAmountField = ref} /></td>
             </tr>
         );
     }
@@ -53,8 +91,6 @@ class Transactions extends React.Component {
     render() {
         let sourceAccount, sinkAccount;
         let getPrettyDate = this.getPrettyDate;
-        let addTransaction = this.props.addTransactionCallback;
-        let deleteTransactions = this.deleteTransactions;
 
         return (
             <div>
@@ -85,11 +121,11 @@ class Transactions extends React.Component {
                 <div id="transactionOperations">
                     <button
                         id="deleteTransactionButton"
-                        onClick={deleteTransactions}
+                        onClick={this.deleteTransactions}
                     >-</button>
                     <button
                         id="addTransactionButton"
-                        onClick={() => addTransaction(this.buildNewTransaction(this.props.transactions)) }
+                        onClick={this.validateAndAddTransaction}
                     >+</button>
                 </div>
             </div>
