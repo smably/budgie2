@@ -52,7 +52,7 @@ class App extends React.Component {
             occurrences = occurrences.concat(rule.all().map(date => {
                 occurrence = Object.assign({}, transaction);
                 occurrence.date = date.toJSON();
-                occurrence.id = occurrence.id + "_" + occurrence.date;
+                occurrence.id = recurrence.transactionID + "_" + occurrence.date;
                 return occurrence;
             }));
         });

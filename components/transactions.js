@@ -41,11 +41,11 @@ class Transactions extends React.Component {
     getNewTransactionRow = () => {
         return (
             <tr id="newTransactionRow">
-                <td><input type="text" placeholder="Date" value={this.getPrettyDate()} ref={(ref) => this.newTransactionDateField = ref} /></td>
-                <td><input type="text" placeholder="Label" ref={(ref) => this.newTransactionLabelField = ref}  /></td>
-                <td><input type="text" placeholder="Source" ref={(ref) => this.newTransactionSourceField = ref}  /></td>
-                <td><input type="text" placeholder="Destination" ref={(ref) => this.newTransactionDestinationField = ref}  /></td>
-                <td><input type="text" placeholder="Amount" ref={(ref) => this.newTransactionAmountField = ref}  /></td>
+                <td><input type="text" placeholder="Date" defaultValue={this.getPrettyDate()} ref={ref => this.newTransactionDateField = ref} /></td>
+                <td><input type="text" placeholder="Label" ref={ref => this.newTransactionLabelField = ref}  /></td>
+                <td><input type="text" placeholder="Source" ref={ref => this.newTransactionSourceField = ref}  /></td>
+                <td><input type="text" placeholder="Destination" ref={ref => this.newTransactionDestinationField = ref}  /></td>
+                <td><input type="text" placeholder="Amount" ref={ref => this.newTransactionAmountField = ref}  /></td>
             </tr>
         );
     }
