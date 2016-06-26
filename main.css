@@ -6,7 +6,7 @@ html {
   border-collapse: collapse;
   font: 1rem 'Inconsolata', monospace;
   margin: 20px 0 0 0;
-  width: 900px;
+  width: 960px;
 }
 
 #data thead tr {
@@ -46,7 +46,8 @@ button:focus {
   outline: none;
 }
 
-#newTransactionRow input {
+#newTransactionRow input,
+#newTransactionRow select {
   box-sizing: border-box;
   width: 100%;
 }
@@ -54,7 +55,7 @@ button:focus {
 #transactionOperations {
   text-align: right;
   margin-top: -2px;
-  width: 900px;
+  width: 960px;
 }
 
 #addTransactionButton,

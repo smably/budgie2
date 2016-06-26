@@ -79,8 +79,22 @@ class Transactions extends React.Component {
     this.props.addTransactionCallback(newTransaction);
   }
 
-  getPrettyDate = (date) => {
+  getPrettyDate = date => {
     return moment(date).format('YYYY-MM-DD');
+  }
+
+  renderAccountOptions = filter => {
+    let account, accounts = this.props.accounts;
+
+    return Object.keys(accounts).map(id => {
+      account = accounts[id];
+
+      if (filter(account)) {
+        return (
+          <option key={id} value={id}>{account.label}</option>
+        );
+      }
+    });
   }
 
   getNewTransactionRow = () => {
@@ -88,8 +102,18 @@ class Transactions extends React.Component {
       <tr id="newTransactionRow">
         <td><input type="text" placeholder="Date" defaultValue={this.getPrettyDate()} ref={ref => this.newTransactionDateField = ref} /></td>
         <td><input type="text" placeholder="Label" ref={ref => this.newTransactionLabelField = ref} /></td>
-        <td><input type="text" placeholder="Source" ref={ref => this.newTransactionSourceField = ref} /></td>
-        <td><input type="text" placeholder="Destination" ref={ref => this.newTransactionDestinationField = ref} /></td>
+        <td>
+          <select ref={ref => this.newTransactionSourceField = ref}>
+            <option>- From -</option>
+            {this.renderAccountOptions(a => a.isSource)}
+          </select>
+        </td>
+        <td>
+          <select ref={ref => this.newTransactionDestinationField = ref}>
+            <option>- To -</option>
+            {this.renderAccountOptions(a => a.isSink)}
+          </select>
+        </td>
         <td><input type="text" placeholder="Amount" ref={ref => this.newTransactionAmountField = ref} /></td>
       </tr>
     );
