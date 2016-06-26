@@ -41,8 +41,10 @@ class Transactions extends React.Component {
     let newTransaction = this.buildNewTransaction();
 
     let accountIDs = Object.keys(this.props.accounts);
-    let sourceIsInvalid = accountIDs.indexOf(newTransaction.source) === -1;
-    let sinkIsInvalid = accountIDs.indexOf(newTransaction.sink) === -1;
+    let sourceExists = accountIDs.indexOf(newTransaction.source) > -1;
+    let sinkExists = accountIDs.indexOf(newTransaction.sink) > -1;
+    let sourceIsSource = sourceExists ? this.props.accounts[newTransaction.source].isSource : false;
+    let sinkIsSink = sinkExists ? this.props.accounts[newTransaction.sink].isSink : false;
 
     if (!newTransaction.date) {
       console.log("Error: invalid date");
@@ -54,8 +56,13 @@ class Transactions extends React.Component {
       return;
     }
 
-    if (sourceIsInvalid || sinkIsInvalid) {
-      console.log("Error: invalid source or destination");
+    if (!sourceExists || !sourceIsSource) {
+      console.log("Error: invalid source account");
+      return;
+    }
+
+    if (!sinkExists || !sinkIsSink) {
+      console.log("Error: invalid destination account");
       return;
     }
 
