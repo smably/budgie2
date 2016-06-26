@@ -10,7 +10,15 @@ import accountData from '../data/accounts.json';
 import transactionData from '../data/transactions.json';
 import recurrenceData from '../data/recurrences.json';
 
+const LOCAL_STORAGE_KEY = "budgie-0.1";
+
 class App extends React.Component {
+    updateLocalStorage = () => {
+        console.log("updating local storage to", this.state);
+
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state))
+    }
+
     addTransaction = (newTransaction) => {
         this.setState(oldState => {
             let transactions = oldState.transactions;
@@ -19,7 +27,7 @@ class App extends React.Component {
             return {
                 transactions: transactions
             };
-        });
+        }, this.updateLocalStorage);
     }
 
     deleteTransaction = (id) => {
@@ -27,7 +35,7 @@ class App extends React.Component {
             return {
                 transactions: oldState.transactions.filter(t => t.id != id)
             }
-        });
+        }, this.updateLocalStorage);
     }
 
     expandRecurrences = (transactions, recurrences) => {
@@ -50,20 +58,27 @@ class App extends React.Component {
     displayAccounts = () => {
         this.setState({
             view: Constants.VIEWS.accounts
-        });
+        }, this.updateLocalStorage);
     }
 
     displayTransactions = () => {
         this.setState({
             view: Constants.VIEWS.transactions
-        });
+        }, this.updateLocalStorage);
     }
 
-    state = {
-        accounts: accountData,
-        transactions: this.expandRecurrences(transactionData, recurrenceData),
-        recurrences: recurrenceData,
-        view: Constants.VIEWS.transactions
+    constructor() {
+        super();
+
+        let localData = localStorage.getItem(LOCAL_STORAGE_KEY);
+        let initialState = {
+            accounts: accountData,
+            transactions: this.expandRecurrences(transactionData, recurrenceData),
+            recurrences: recurrenceData,
+            view: Constants.VIEWS.transactions
+        };
+
+        this.state = localData ? JSON.parse(localData) : initialState;
     }
 
     componentDidMount() {
