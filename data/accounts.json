@@ -1,20 +1,17 @@
-[
-    {
-        "id": "00001",
+{
+    "00001": {
         "isSource": true,
         "isSink": false,
         "label": "Paycheque"
     },
-    {
-        "id": "00002",
+    "00002": {
         "isSource": true,
         "isSink": true,
         "label": "Primary Account"
     },
-    {
-        "id": "00003",
+    "00003": {
         "isSource": true,
         "isSink": true,
         "label": "Secondary Account"
     }
-]
+}

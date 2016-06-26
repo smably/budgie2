@@ -12,10 +12,10 @@ class Transactions extends React.Component {
     }
 
     deleteTransactions = () => {
-        let selectedRows = document.querySelectorAll("#data .selected");
+        let selectedRows = [...document.querySelectorAll("#data .selected")];
         let deleteTransaction = this.props.deleteTransactionCallback;
 
-        Array.prototype.forEach.call(selectedRows, (selectedRow) => {
+        selectedRows.forEach(selectedRow => {
             deleteTransaction(selectedRow.getAttribute("data-transaction-id"));
         });
     }

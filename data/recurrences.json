@@ -1,7 +1,6 @@
-[
-    {
-        "id": "00001",
-        "transaction": "00001",
+{
+    "00001": {
+        "transactionID": "00001",
         "rruleset":
         [
             "RRULE:FREQ=WEEKLY;COUNT=5;DTSTART=20160315T000000Z",
@@ -9,4 +8,4 @@
             "EXDATE:20160322T000000Z"
         ]
     }
-]
+}

@@ -39,11 +39,16 @@ class App extends React.Component {
     }
 
     expandRecurrences = (transactions, recurrences) => {
-        let rule, transaction, occurrences = transactions, occurrence;
-        recurrences.forEach(recurrence => {
+        let rule, transaction, occurrence;
+        let occurrences = Object.keys(transactions).map(transactionID =>
+          Object.assign({ id: transactionID }, transactions[transactionID])
+        );
+
+        Object.keys(recurrences).forEach(recurrenceID => {
+            let recurrence = recurrences[recurrenceID];
             rule = rrulestr(recurrence.rruleset.join("\n"));
             console.log(transactions);
-            transaction = transactions.filter(t => t.id === recurrence.transaction)[0];
+            transaction = transactions[recurrence.transaction];
             occurrences = occurrences.concat(rule.all().map(date => {
                 occurrence = Object.assign({}, transaction);
                 occurrence.date = date.toJSON();
