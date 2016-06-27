@@ -9,13 +9,14 @@ class TransactionRow extends React.Component {
     source: React.PropTypes.object.isRequired,
     sink: React.PropTypes.object.isRequired,
     getPrettyDate: React.PropTypes.func.isRequired,
+    toggleSelectedTransaction: React.PropTypes.func.isRequired,
   }
 
   render() {
     let t = this.props.transaction;
 
     return (
-      <tr data-transaction-id={t.id} onClick={e => e.target.closest('tr').classList.toggle("selected")}>
+      <tr data-transaction-id={t.id} onClick={this.props.toggleSelectedTransaction} className="data-row">
         <td>{this.props.getPrettyDate(t.date)}</td>
         <td>{t.label}</td>
         <td>{this.props.source.label}</td>

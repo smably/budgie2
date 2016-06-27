@@ -119,6 +119,7 @@ class App extends React.Component {
         mainContent = (
           <Accounts
             accounts={this.state.accounts}
+            transactions={this.state.transactions}
             addAccountCallback={this.addAccount}
             deleteAccountCallback={this.deleteAccount} />
         );

@@ -12,6 +12,16 @@ class Transactions extends React.Component {
     deleteTransactionCallback: React.PropTypes.func.isRequired,
   }
 
+  toggleSelectedTransaction = (e) => {
+    e.target.closest('tr').classList.toggle("selected");
+    this.updateDeleteButtonState();
+  }
+
+  updateDeleteButtonState = (override) => {
+    let hasTransactionsSelected = typeof override === "boolean" ? override : document.querySelector("#data .selected") != null;
+    document.getElementById("deleteTransactionButton").classList.toggle("visible", hasTransactionsSelected);
+  }
+
   deleteTransactions = () => {
     let selectedRows = [...document.querySelectorAll("#data .selected")];
     let deleteTransaction = this.props.deleteTransactionCallback;
@@ -19,6 +29,8 @@ class Transactions extends React.Component {
     selectedRows.forEach(selectedRow => {
       deleteTransaction(selectedRow.getAttribute("data-transaction-id"));
     });
+
+    this.updateDeleteButtonState(false);
   }
 
   buildNewTransaction = () => {
@@ -123,6 +135,7 @@ class Transactions extends React.Component {
   render() {
     let sourceAccount, sinkAccount;
     let getPrettyDate = this.getPrettyDate;
+    let toggle = this.toggleSelectedTransaction;
 
     return (
       <div>
@@ -145,7 +158,8 @@ class Transactions extends React.Component {
               transaction={t}
               source={this.props.accounts[t.source]}
               sink={this.props.accounts[t.sink]}
-              getPrettyDate={getPrettyDate} />
+              getPrettyDate={getPrettyDate}
+              toggleSelectedTransaction={toggle} />
           )}
           {this.getNewTransactionRow()}
         </tbody>
