@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import moment from 'moment/src/moment';
 import { RRule, RRuleSet, rrulestr } from '../lib/rrule/rrule';
 import * as Constants from '../data/constants.js';
 
@@ -64,22 +65,43 @@ class App extends React.Component {
 
   compareTransactions = (a, b) => a.date.localeCompare(b.date)
 
+  getDisplayDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
+
   expandRecurrences = (transactions, recurrences) => {
     let rule, transaction, occurrence;
 
-    let occurrences = Object.keys(transactions).map(transactionID =>
-      Object.assign({ id: transactionID }, transactions[transactionID])
-    );
+    let occurrences = Object.keys(transactions).map(transactionID => {
+      let transaction = transactions[transactionID];
+      let transactionRecurrenceID;
+
+      Object.keys(recurrences).forEach(recurrenceID => {
+        if (recurrences[recurrenceID].transactionID === transactionID) {
+          transactionRecurrenceID = recurrenceID;
+        }
+      });
+
+      return Object.assign({}, transaction, {
+        id: transactionID,
+        parentID: transactionID,
+        recurrenceID: transactionRecurrenceID,
+        displayDate: this.getDisplayDate(transaction.date)
+      });
+    });
 
     Object.keys(recurrences).forEach(recurrenceID => {
       let recurrence = recurrences[recurrenceID];
       rule = rrulestr(recurrence.rruleset.join("\n"));
       transaction = transactions[recurrence.transactionID];
+
       occurrences = occurrences.concat(rule.all().map(date => {
-        occurrence = Object.assign({}, transaction);
-        occurrence.date = date.toJSON();
-        occurrence.id = recurrence.transactionID + "_" + occurrence.date;
-        return occurrence;
+        let displayDate = this.getDisplayDate(date);
+
+        return Object.assign({}, transaction, {
+          id: recurrence.transactionID + "_" + displayDate,
+          parentID: recurrence.transactionID,
+          date: date.toJSON(),
+          displayDate: displayDate
+        });
       }));
     });
 
@@ -141,6 +163,7 @@ class App extends React.Component {
             accounts={this.state.accounts}
             transactions={this.state.transactions}
             recurrences={this.state.recurrences}
+            getDisplayDate={this.getDisplayDate}
             addTransactionCallback={this.addTransaction}
             deleteTransactionCallback={this.deleteTransaction} />
         );

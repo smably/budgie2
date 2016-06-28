@@ -8,12 +8,16 @@ class Transactions extends React.Component {
     accounts: React.PropTypes.object,
     transactions: React.PropTypes.array,
     recurrences: React.PropTypes.object,
+    getDisplayDate: React.PropTypes.func.isRequired,
     addTransactionCallback: React.PropTypes.func.isRequired,
     deleteTransactionCallback: React.PropTypes.func.isRequired,
   }
 
   toggleSelectedTransaction = (e) => {
-    e.target.closest('tr').classList.toggle("selected");
+    let parentID = e.target.closest('tr').dataset.parentId;
+    let allWithParent = document.querySelectorAll(`tr.data-row[data-parent-id="${parentID}"]`);
+
+    [...allWithParent].forEach(el => el.classList.toggle("selected"));
     this.updateDeleteButtonState();
   }
 
@@ -45,12 +49,14 @@ class Transactions extends React.Component {
     date = date.isValid() ? date.format('YYYY-MM-DD') + "T00:00:00.000Z" : null;
 
     return {
-      "id": thisTransactionId,
+      "id": transactionId,
+      "parentID": transactionId,
       "amount": parseInt((amount * 100).toFixed()),
       "source": this.newTransactionSourceField.value,
       "sink": this.newTransactionDestinationField.value,
       "label": this.newTransactionLabelField.value,
-      "date": date
+      "date": date,
+      "displayDate": this.props.getDisplayDate(date)
     };
   }
 
@@ -95,8 +101,6 @@ class Transactions extends React.Component {
     this.props.addTransactionCallback(newTransaction);
   }
 
-  getPrettyDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
-
   getNewTransactionRow = () => {
     let renderAccountOptions = filter => [...this.props.accounts]
       .filter(([, account]) => filter(account))
@@ -104,7 +108,7 @@ class Transactions extends React.Component {
 
     return (
       <tr id="newTransactionRow">
-        <td><input type="text" placeholder="Date" defaultValue={this.getPrettyDate()} ref={ref => this.newTransactionDateField = ref} /></td>
+        <td><input type="text" placeholder="Date" defaultValue={this.props.getDisplayDate()} ref={ref => this.newTransactionDateField = ref} /></td>
         <td><input type="text" placeholder="Label" ref={ref => this.newTransactionLabelField = ref} /></td>
         <td>
           <select ref={ref => this.newTransactionSourceField = ref}>
@@ -125,7 +129,6 @@ class Transactions extends React.Component {
 
   render() {
     let sourceAccount, sinkAccount;
-    let getPrettyDate = this.getPrettyDate;
     let toggle = this.toggleSelectedTransaction;
 
     return (
@@ -149,7 +152,6 @@ class Transactions extends React.Component {
               transaction={t}
               source={this.props.accounts.get(t.source)}
               sink={this.props.accounts.get(t.sink)}
-              getPrettyDate={getPrettyDate}
               toggleSelectedTransaction={toggle} />
           )}
           {this.getNewTransactionRow()}
