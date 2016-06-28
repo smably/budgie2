@@ -22,6 +22,8 @@ class Transactions extends React.Component {
     document.getElementById("deleteTransactionButton").classList.toggle("visible", hasTransactionsSelected);
   }
 
+  // FIXME: what if the user tries to delete an instance of a recurring transaction? Error out? Update the recurrence?
+  // Or maybe, when clicking an occurrence, all other occurrences should be highlighted too?
   deleteTransactions = () => {
     let selectedRows = [...document.querySelectorAll("#data .selected")];
     let deleteTransaction = this.props.deleteTransactionCallback;
@@ -33,9 +35,11 @@ class Transactions extends React.Component {
     this.updateDeleteButtonState(false);
   }
 
+  // TODO: recurring transactions
   buildNewTransaction = () => {
-    let maxTransactionId = Math.max.apply(Math, this.props.transactions.map(t => parseInt(t.id)));
-    let thisTransactionId = String("0000" + (maxTransactionId + 1)).slice(-5);
+    let maxTransactionId = Math.max(...this.props.transactions.map(t => parseInt(t.id)));
+
+    let transactionId = String("0000" + (maxTransactionId + 1)).slice(-5);
     let amount = this.newTransactionAmountField.value.replace(/[^\d.-]/g, "");
     let date = moment(this.newTransactionDateField.value);
     date = date.isValid() ? date.format('YYYY-MM-DD') + "T00:00:00.000Z" : null;
@@ -93,13 +97,11 @@ class Transactions extends React.Component {
 
   getPrettyDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
 
-  renderAccountOptions = filter => {
-    let makeOption = ([id, account]) => <option key={id} value={id}>{account.label}</option>;
-
-    return [...this.props.accounts].filter(([, account]) => filter(account)).map(makeOption);
-  }
-
   getNewTransactionRow = () => {
+    let renderAccountOptions = filter => [...this.props.accounts]
+      .filter(([, account]) => filter(account))
+      .map(([id, account]) => <option key={id} value={id}>{account.label}</option>)
+
     return (
       <tr id="newTransactionRow">
         <td><input type="text" placeholder="Date" defaultValue={this.getPrettyDate()} ref={ref => this.newTransactionDateField = ref} /></td>
@@ -107,13 +109,13 @@ class Transactions extends React.Component {
         <td>
           <select ref={ref => this.newTransactionSourceField = ref}>
             <option>- From -</option>
-            {this.renderAccountOptions(a => a.isSource)}
+            {renderAccountOptions(a => a.isSource)}
           </select>
         </td>
         <td>
           <select ref={ref => this.newTransactionDestinationField = ref}>
             <option>- To -</option>
-            {this.renderAccountOptions(a => a.isSink)}
+            {renderAccountOptions(a => a.isSink)}
           </select>
         </td>
         <td><input type="text" placeholder="Amount" ref={ref => this.newTransactionAmountField = ref} /></td>
