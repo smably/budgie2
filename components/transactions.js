@@ -83,7 +83,7 @@ class Transactions extends React.Component {
       return;
     }
 
-    if (newTransaction.amount === 0) {
+    if (newTransaction.amount <= 0) {
       console.log("Error: invalid amount");
       return;
     }
@@ -91,9 +91,7 @@ class Transactions extends React.Component {
     this.props.addTransactionCallback(newTransaction);
   }
 
-  getPrettyDate = date => {
-    return moment(date).format('YYYY-MM-DD');
-  }
+  getPrettyDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
 
   renderAccountOptions = filter => {
     let makeOption = ([id, account]) => <option key={id} value={id}>{account.label}</option>;

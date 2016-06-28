@@ -44,8 +44,9 @@ class App extends React.Component {
 
   addTransaction = (newTransaction) => {
     this.setState(oldState => {
-      let transactions = oldState.transactions;
+      let transactions = Object.assign([], oldState.transactions);
       transactions.push(newTransaction);
+      transactions.sort(this.compareTransactions);
 
       return {
         transactions: transactions
@@ -60,6 +61,8 @@ class App extends React.Component {
       }
     }, this.updateLocalStorage);
   }
+
+  compareTransactions = (a, b) => a.date.localeCompare(b.date)
 
   expandRecurrences = (transactions, recurrences) => {
     let rule, transaction, occurrence;
@@ -80,7 +83,7 @@ class App extends React.Component {
       }));
     });
 
-    return occurrences.sort((a, b) => a.date.localeCompare(b.date));
+    return occurrences.sort(this.compareTransactions);
   }
 
   displayAccounts = () => {
