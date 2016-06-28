@@ -53,11 +53,10 @@ class Transactions extends React.Component {
   validateAndAddTransaction = () => {
     let newTransaction = this.buildNewTransaction();
 
-    let accountIDs = Object.keys(this.props.accounts);
-    let sourceExists = accountIDs.indexOf(newTransaction.source) > -1;
-    let sinkExists = accountIDs.indexOf(newTransaction.sink) > -1;
-    let sourceIsSource = sourceExists ? this.props.accounts[newTransaction.source].isSource : false;
-    let sinkIsSink = sinkExists ? this.props.accounts[newTransaction.sink].isSink : false;
+    let sourceExists = this.props.accounts.has(newTransaction.source);
+    let sinkExists = this.props.accounts.has(newTransaction.sink);
+    let sourceIsSource = sourceExists ? this.props.accounts.get(newTransaction.source).isSource : false;
+    let sinkIsSink = sinkExists ? this.props.accounts.get(newTransaction.sink).isSink : false;
 
     if (!newTransaction.date) {
       console.log("Error: invalid date");
@@ -97,17 +96,9 @@ class Transactions extends React.Component {
   }
 
   renderAccountOptions = filter => {
-    let account, accounts = this.props.accounts;
+    let makeOption = ([id, account]) => <option key={id} value={id}>{account.label}</option>;
 
-    return Object.keys(accounts).map(id => {
-      account = accounts[id];
-
-      if (filter(account)) {
-        return (
-          <option key={id} value={id}>{account.label}</option>
-        );
-      }
-    });
+    return [...this.props.accounts].filter(([, account]) => filter(account)).map(makeOption);
   }
 
   getNewTransactionRow = () => {
@@ -156,8 +147,8 @@ class Transactions extends React.Component {
             <TransactionRow
               key={t.id}
               transaction={t}
-              source={this.props.accounts[t.source]}
-              sink={this.props.accounts[t.sink]}
+              source={this.props.accounts.get(t.source)}
+              sink={this.props.accounts.get(t.sink)}
               getPrettyDate={getPrettyDate}
               toggleSelectedTransaction={toggle} />
           )}

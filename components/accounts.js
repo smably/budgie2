@@ -19,61 +19,50 @@ class Accounts extends React.Component {
     document.getElementById("deleteAccountButton").classList.toggle("visible", hasAccountsSelected);
   }
 
-  renderAccountRows = () => {
-    let account, accountIDs = Object.keys(this.props.accounts);
-    let toggle = this.toggleSelectedAccount;
+  renderAccountRows = () => [...this.props.accounts].map(([accountID, account]) => (
+    <tr key={accountID} data-account-id={accountID} onClick={this.toggleSelectedAccount} className="data-row">
+      <td>{account.label}</td>
+      <td>{account.isSource ? "Y" : "N"}</td>
+      <td>{account.isSink ? "Y" : "N"}</td>
+    </tr>
+  ));
 
-    return accountIDs.map(accountID => {
-      account = this.props.accounts[accountID];
-
-      return (
-        <tr key={accountID} data-account-id={accountID} onClick={toggle} className="data-row">
-          <td>{account.label}</td>
-          <td>{account.isSource ? "Y" : "N"}</td>
-          <td>{account.isSink ? "Y" : "N"}</td>
-        </tr>
-      );
-    });
-  }
-
-  renderNewAccountRow = () => {
-    return (
-      <tr id="newAccountRow">
-        <td><input type="text" placeholder="Label" ref={ref => this.newAccountLabelField = ref} /></td>
-        <td><input type="checkbox" defaultChecked={true} ref={ref => this.newAccountSourceField = ref} /></td>
-        <td><input type="checkbox" defaultChecked={true} ref={ref => this.newAccountDestinationField = ref} /></td>
-      </tr>
-    );
-  }
+  renderNewAccountRow = () => (
+    <tr id="newAccountRow">
+      <td><input type="text" placeholder="Label" ref={ref => this.newAccountLabelField = ref} /></td>
+      <td><input type="checkbox" defaultChecked={true} ref={ref => this.newAccountSourceField = ref} /></td>
+      <td><input type="checkbox" defaultChecked={true} ref={ref => this.newAccountDestinationField = ref} /></td>
+    </tr>
+  )
 
   // TODO: store initial balance and date
   // TODO: flag to hide from account overview (source+sink accounts shown by default?)
   buildNewAccount = () => {
-    let accountIDs = Object.keys(this.props.accounts);
+    let accountIDs = [...this.props.accounts.keys()];
     let maxAccountID = Math.max(...accountIDs.map(id => parseInt(id)));
-    let thisAccountID = String("0000" + (maxAccountID + 1)).slice(-5);
 
-    return {
-      [thisAccountID]: {
-        "label": this.newAccountLabelField.value,
-        "isSource": this.newAccountSourceField.checked,
-        "isSink": this.newAccountDestinationField.checked,
-      }
+    let accountID = String("0000" + (maxAccountID + 1)).slice(-5);
+    let account = {
+      "label": this.newAccountLabelField.value,
+      "isSource": this.newAccountSourceField.checked,
+      "isSink": this.newAccountDestinationField.checked,
     };
+
+    return new Map([[accountID, account]]);
   }
 
   validateAndAddAccount = () => {
-    let newAccountObject = this.buildNewAccount();
-    let newAccount = newAccountObject[Object.keys(newAccountObject)[0]]; // FIXME EW EW EW EW this needs to be a Map!!
+    let newAccountMap = this.buildNewAccount();
+    let [[, newAccount]] = [...newAccountMap];
 
     if (newAccount.label === "") {
       console.log("Error: label cannot be blank");
       return;
     }
 
-    let accountLabelMatches = accountID =>
-      (this.props.accounts[accountID].label.toLowerCase() === newAccount.label.toLowerCase());
-    let accountExistsWithLabel = Object.keys(this.props.accounts).filter(accountLabelMatches).length > 0;
+    let accountExistsWithLabel = [...this.props.accounts.values()].some(
+      account => account.label.toLowerCase() === newAccount.label.toLowerCase()
+    );
 
     if (accountExistsWithLabel) {
       console.log("Error: label must be unique");
@@ -85,7 +74,7 @@ class Accounts extends React.Component {
       return;
     }
 
-    this.props.addAccountCallback(newAccountObject);
+    this.props.addAccountCallback(newAccountMap);
   }
 
   deleteAccounts = () => {
@@ -103,7 +92,7 @@ class Accounts extends React.Component {
 
       if (transactions.some(t => isFromAccount(t) || isToAccount(t))) {
         skippedAccount = true;
-        accountLabel = this.props.accounts[accountID].label;
+        accountLabel = this.props.accounts.get(accountID).label;
         console.log(`Not deleting ${accountLabel}: account has transactions`)
       } else {
         deleteAccount(accountID);

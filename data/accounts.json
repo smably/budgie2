@@ -1,17 +1,26 @@
-{
-  "00001": {
-    "isSource": true,
-    "isSink": false,
-    "label": "Paycheque"
-  },
-  "00002": {
-    "isSource": true,
-    "isSink": true,
-    "label": "Primary Account"
-  },
-  "00003": {
-    "isSource": true,
-    "isSink": true,
-    "label": "Secondary Account"
-  }
-}
+[
+  [
+    "00001",
+    {
+      "isSource": true,
+      "isSink": false,
+      "label": "Pay"
+    }
+  ],
+  [
+    "00002",
+    {
+      "isSource": true,
+      "isSink": true,
+      "label": "Primary Account"
+    }
+  ],
+  [
+    "00003",
+    {
+      "isSource": true,
+      "isSink": true,
+      "label": "Secondary Account"
+    }
+  ]
+]

@@ -16,7 +16,9 @@ class App extends React.Component {
   updateLocalStorage = () => {
     console.log("updating local storage to", this.state);
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state))
+    let pojoState = Object.assign({}, this.state, { accounts: [...this.state.accounts] });
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(pojoState))
   }
 
   addAccount = (newAccount) => {
@@ -24,18 +26,18 @@ class App extends React.Component {
 
     this.setState(oldState => {
       return {
-        accounts: Object.assign({}, oldState.accounts, newAccount)
+        accounts: new Map([...oldState.accounts, ...newAccount])
       };
     }, this.updateLocalStorage);
   }
 
   deleteAccount = (id) => {
     this.setState(oldState => {
-      let newState = Object.assign({}, oldState.accounts);
-      delete newState[id];
+      let newAccounts = new Map(oldState.accounts);
+      newAccounts.delete(id);
 
       return {
-        accounts: newState
+        accounts: newAccounts
       }
     }, this.updateLocalStorage);
   }
@@ -97,14 +99,20 @@ class App extends React.Component {
     super();
 
     let localData = localStorage.getItem(LOCAL_STORAGE_KEY);
-    let initialState = {
-      accounts: accountData,
-      transactions: this.expandRecurrences(transactionData, recurrenceData),
-      recurrences: recurrenceData,
-      view: Constants.VIEWS.transactions
-    };
 
-    this.state = localData ? JSON.parse(localData) : initialState;
+    if (localData) {
+      let initialState = JSON.parse(localData);
+      initialState.accounts = new Map(initialState.accounts);
+
+      this.state = initialState;
+    } else {
+      this.state = {
+        accounts: new Map(accountData),
+        transactions: this.expandRecurrences(transactionData, recurrenceData),
+        recurrences: recurrenceData,
+        view: Constants.VIEWS.transactions
+      };
+    }
   }
 
   componentDidMount() {
@@ -135,7 +143,7 @@ class App extends React.Component {
         );
         break;
       default:
-        mainContent = <div class="error">View does not exist.</div>;
+        mainContent = <div className="error">View does not exist.</div>;
         break;
     }
 
