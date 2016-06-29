@@ -100,6 +100,12 @@ class App extends React.Component {
 
   expandRecurrences = (transactions, recurrences) => {
     let transaction, recurrence, rrule, occurrences = [];
+    let now = moment();
+    let begin = moment(now).subtract(1, "month").toDate();
+    let end = moment(now).add(3, "months").toDate();
+
+    console.log(begin);
+    console.log(end);
 
     [...transactions].forEach(([id, transaction]) => {
       if (transaction.recurrenceID) {
@@ -107,7 +113,7 @@ class App extends React.Component {
         rrule = rrulestr(this.fixDates(recurrence.rruleset).join("\n"));
 
         // TODO limit to date range
-        occurrences = occurrences.concat(rrule.all().map(date => {
+        occurrences = occurrences.concat(rrule.between(begin, end).map(date => {
           let displayDate = this.getDisplayDate(date);
 
           return [
