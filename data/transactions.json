@@ -4,13 +4,13 @@
     "source": "00001",
     "sink": "00002",
     "label": "Bi-weekly pay",
-    "date": "2016-03-15T00:00:00.000Z"
+    "recurrenceID": "00001"
   },
   "00002": {
     "amount": 14000,
     "source": "00002",
     "sink": "00003",
-    "label": "Transfer from Primary to Secondary",
-    "date": "2016-03-16T00:00:00.000Z"
+    "label": "To secondary account",
+    "date": "2016-06-28T00:00:00.000Z"
   }
 }

@@ -68,41 +68,32 @@ class App extends React.Component {
   getDisplayDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
 
   expandRecurrences = (transactions, recurrences) => {
-    let rule, transaction, occurrence;
+    let transaction, recurrence, rrule, occurrences = [];
 
-    let occurrences = Object.keys(transactions).map(transactionID => {
-      let transaction = transactions[transactionID];
-      let transactionRecurrenceID;
+    Object.keys(transactions).forEach(transactionID => {
+      transaction = transactions[transactionID];
 
-      Object.keys(recurrences).forEach(recurrenceID => {
-        if (recurrences[recurrenceID].transactionID === transactionID) {
-          transactionRecurrenceID = recurrenceID;
-        }
-      });
+      if (transaction.recurrenceID) {
+        recurrence = recurrences[transaction.recurrenceID];
+        rrule = rrulestr(recurrence.rruleset.join("\n"));
 
-      return Object.assign({}, transaction, {
-        id: transactionID,
-        parentID: transactionID,
-        recurrenceID: transactionRecurrenceID,
-        displayDate: this.getDisplayDate(transaction.date)
-      });
-    });
+        occurrences = occurrences.concat(rrule.all().map(date => {
+          let displayDate = this.getDisplayDate(date);
 
-    Object.keys(recurrences).forEach(recurrenceID => {
-      let recurrence = recurrences[recurrenceID];
-      rule = rrulestr(recurrence.rruleset.join("\n"));
-      transaction = transactions[recurrence.transactionID];
-
-      occurrences = occurrences.concat(rule.all().map(date => {
-        let displayDate = this.getDisplayDate(date);
-
-        return Object.assign({}, transaction, {
-          id: recurrence.transactionID + "_" + displayDate,
-          parentID: recurrence.transactionID,
-          date: date.toJSON(),
-          displayDate: displayDate
-        });
-      }));
+          return Object.assign({}, transaction, {
+            id: `${transactionID}_${displayDate}`,
+            parentID: transactionID,
+            date: date.toJSON(),
+            displayDate: displayDate
+          });
+        }));
+      } else {
+        occurrences.push(Object.assign({}, transaction, {
+          id: transactionID,
+          parentID: transactionID,
+          displayDate: this.getDisplayDate(transaction.date)
+        }));
+      }
     });
 
     return occurrences.sort(this.compareTransactions);
