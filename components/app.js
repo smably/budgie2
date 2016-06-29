@@ -66,7 +66,31 @@ class App extends React.Component {
     return dateComparison === 0 ? a.id.localeCompare(b.id) : dateComparison;
   }
 
-  getDisplayDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
+  getDisplayDate = date => {
+    return (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
+  }
+
+  fixDates = rruleSet => {
+    let matches, dates;
+    let datePattern = /(?:DTSTART|RDATE|EXDATE)=([\dTZ]+)/g;
+
+    // Oh my, this is ugly: chop off the trailing Z to make it local, then convert back to UTC
+    let toUTCString = date => moment(date.slice(0, -1)).utc().format("YYYYMMDD[T]HHmmss[Z]");
+
+    return rruleSet.map(rrulestr => {
+      dates = [];
+
+      while (matches = datePattern.exec(rrulestr)) {
+        dates.push(matches[1]);
+      }
+
+      dates.forEach(date => {
+        rrulestr = rrulestr.replace(date, toUTCString(date));
+      });
+
+      return rrulestr;
+    });
+  }
 
   expandRecurrences = (transactions, recurrences) => {
     let transaction, recurrence, rrule, occurrences = [];
@@ -76,8 +100,9 @@ class App extends React.Component {
 
       if (transaction.recurrenceID) {
         recurrence = recurrences[transaction.recurrenceID];
-        rrule = rrulestr(recurrence.rruleset.join("\n"));
+        rrule = rrulestr(this.fixDates(recurrence.rruleset).join("\n"));
 
+        // TODO limit to date range
         occurrences = occurrences.concat(rrule.all().map(date => {
           let displayDate = this.getDisplayDate(date);
 

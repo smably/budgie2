@@ -164,7 +164,7 @@ class Transactions extends React.Component {
         <table id="data">
         <thead>
           <tr>
-            <td>Date</td>
+            <td><svg className="icon icon-repeat"></svg>Date</td>
             <td>Transaction</td>
             <td>From</td>
             <td>To</td>
