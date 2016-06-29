@@ -22,5 +22,13 @@
       "isSink": true,
       "label": "Secondary Account"
     }
+  ],
+  [
+    "00004",
+    {
+      "isSource": false,
+      "isSink": true,
+      "label": "Citizens Bank Visa"
+    }
   ]
 ]
