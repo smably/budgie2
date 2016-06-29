@@ -26,8 +26,8 @@ class Transactions extends React.Component {
     document.getElementById("deleteTransactionButton").classList.toggle("visible", hasTransactionsSelected);
   }
 
-  // FIXME: what if the user tries to delete an instance of a recurring transaction? Error out? Update the recurrence?
-  // Or maybe, when clicking an occurrence, all other occurrences should be highlighted too?
+  // FIXME: check whether all instances of a recurrence are selected
+  // If not, update the rrule to add exceptions on the deleted dates
   deleteTransactions = () => {
     let selectedRows = [...document.querySelectorAll("#data .selected")];
     let deleteTransaction = this.props.deleteTransactionCallback;

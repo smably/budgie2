@@ -63,7 +63,10 @@ class App extends React.Component {
     }, this.updateLocalStorage);
   }
 
-  compareTransactions = (a, b) => a.date.localeCompare(b.date)
+  compareTransactions = (a, b) => {
+    let dateComparison = a.date.localeCompare(b.date);
+    return dateComparison === 0 ? a.id.localeCompare(b.id) : dateComparison;
+  }
 
   getDisplayDate = date => (date ? moment.utc(date) : moment()).format('YYYY-MM-DD')
 
