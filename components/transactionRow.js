@@ -22,8 +22,8 @@ class TransactionRow extends React.Component {
     let source = this.props.source;
     let sink = this.props.sink;
 
-    let amountIsNegative = (source && sink && source.isSink && !sink.isSource);
-    let amountIsPositive = (source && sink && !source.isSink && sink.isSource);
+    let amountIsNegative = (source && sink && source.hasBalance && !sink.hasBalance);
+    let amountIsPositive = (source && sink && !source.hasBalance && sink.hasBalance);
     let amountClasses = "amount";
     let balanceClasses = "amount" + (t.balances.primary < 0 ? " neg" : "");
     let formatAmount = amount => accounting.formatMoney(amount / 100, "$", 2);
