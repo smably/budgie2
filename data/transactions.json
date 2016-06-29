@@ -2,7 +2,7 @@
   [
     "00001",
     {
-      "amount": 203570,
+      "amount": 200000,
       "source": "00005",
       "sink": "00001",
       "label": "Pay",
@@ -62,7 +62,7 @@
   [
     "00007",
     {
-      "amount": 325908,
+      "amount": 326000,
       "source": "00003",
       "sink": "00006",
       "label": "Credit card payment",

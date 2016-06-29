@@ -16,7 +16,7 @@
   [
     "00002",
     {
-      "label": "BMO Weekly Spending Account",
+      "label": "BMO Spending Account",
       "isSource": true,
       "isSink": true,
       "hasBalance": true,
@@ -29,7 +29,7 @@
   [
     "00003",
     {
-      "label": "BMO Savings and Travel Account",
+      "label": "BMO Savings Account",
       "isSource": true,
       "isSink": true,
       "hasBalance": true,
