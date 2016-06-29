@@ -17,7 +17,11 @@ class App extends React.Component {
   updateLocalStorage = () => {
     console.log("updating local storage to", this.state);
 
-    let pojoState = Object.assign({}, this.state, { accounts: [...this.state.accounts] });
+    let pojoState = Object.assign({}, this.state, {
+      accounts: [...this.state.accounts],
+      transactions: [...this.state.transactions],
+      recurrences: [...this.state.recurrences]
+    });
 
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(pojoState))
   }
@@ -43,27 +47,29 @@ class App extends React.Component {
 
   addTransaction = (newTransaction) => {
     this.setState(oldState => {
-      let transactions = Object.assign([], oldState.transactions);
-      transactions.push(newTransaction);
-      transactions.sort(this.compareTransactions);
+      let newTransactions = [...oldState.transactions, ...newTransaction];
+      newTransactions.sort(this.compareTransactions);
 
       return {
-        transactions: transactions
+        transactions: new Map(newTransactions)
       };
     }, this.updateLocalStorage);
   }
 
   deleteTransaction = (id) => {
     this.setState(oldState => {
+      let newTransactions = new Map(oldState.transactions);
+      newTransactions.delete(id);
+
       return {
-        transactions: oldState.transactions.filter(t => t.id != id)
-      }
+        transactions: newTransactions
+      };
     }, this.updateLocalStorage);
   }
 
-  compareTransactions = (a, b) => {
-    let dateComparison = a.date.localeCompare(b.date);
-    return dateComparison === 0 ? a.id.localeCompare(b.id) : dateComparison;
+  compareTransactions = ([id1, data1], [id2, data2]) => {
+    let dateComparison = data1.date.localeCompare(data2.date);
+    return dateComparison === 0 ? id1.localeCompare(id2) : dateComparison;
   }
 
   getDisplayDate = date => {
@@ -95,34 +101,37 @@ class App extends React.Component {
   expandRecurrences = (transactions, recurrences) => {
     let transaction, recurrence, rrule, occurrences = [];
 
-    Object.keys(transactions).forEach(transactionID => {
-      transaction = transactions[transactionID];
-
+    [...transactions].forEach(([id, transaction]) => {
       if (transaction.recurrenceID) {
-        recurrence = recurrences[transaction.recurrenceID];
+        recurrence = recurrences.get(transaction.recurrenceID);
         rrule = rrulestr(this.fixDates(recurrence.rruleset).join("\n"));
 
         // TODO limit to date range
         occurrences = occurrences.concat(rrule.all().map(date => {
           let displayDate = this.getDisplayDate(date);
 
-          return Object.assign({}, transaction, {
-            id: `${transactionID}_${displayDate}`,
-            parentID: transactionID,
-            date: date.toJSON(),
-            displayDate: displayDate
-          });
+          return [
+            `${id}_${displayDate}`,
+            Object.assign({}, transaction, {
+              parentID: id,
+              date: date.toJSON(),
+              displayDate: displayDate
+            })
+          ];
         }));
       } else {
-        occurrences.push(Object.assign({}, transaction, {
-          id: transactionID,
-          parentID: transactionID,
-          displayDate: this.getDisplayDate(transaction.date)
-        }));
+        occurrences.push([
+          id,
+          Object.assign({}, transaction, {
+            id: id,
+            parentID: id,
+            displayDate: this.getDisplayDate(transaction.date)
+          })
+        ]);
       }
     });
 
-    return occurrences.sort(this.compareTransactions);
+    return new Map(occurrences.sort(this.compareTransactions));
   }
 
   displayAccounts = () => {
@@ -145,13 +154,19 @@ class App extends React.Component {
     if (localData) {
       let initialState = JSON.parse(localData);
       initialState.accounts = new Map(initialState.accounts);
+      initialState.transactions = new Map(initialState.transactions);
+      initialState.recurrences = new Map(initialState.recurrences);
 
       this.state = initialState;
     } else {
+      let accounts = new Map(accountData);
+      let transactions = new Map(transactionData);
+      let recurrences = new Map(recurrenceData);
+
       this.state = {
-        accounts: new Map(accountData),
-        transactions: this.expandRecurrences(transactionData, recurrenceData),
-        recurrences: recurrenceData,
+        accounts: accounts,
+        transactions: this.expandRecurrences(transactions, recurrences),
+        recurrences: recurrences,
         view: Constants.VIEWS.transactions
       };
     }

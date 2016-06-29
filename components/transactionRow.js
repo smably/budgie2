@@ -5,6 +5,7 @@ let accounting = require('accounting');
 
 class TransactionRow extends React.Component {
   static propTypes = {
+    id: React.PropTypes.string.isRequired,
     transaction: React.PropTypes.object.isRequired,
     source: React.PropTypes.object,
     sink: React.PropTypes.object,
@@ -12,6 +13,7 @@ class TransactionRow extends React.Component {
   }
 
   render() {
+    let id = this.props.id;
     let t = this.props.transaction;
     let isRecurring = t.parentID && (t.parentID != t.id);
     let recurrenceIcon = <svg className="icon icon-repeat"><use xlinkHref="#icon-repeat"></use></svg>;
@@ -33,7 +35,7 @@ class TransactionRow extends React.Component {
     }
 
     return (
-      <tr data-transaction-id={t.id} data-parent-id={t.parentID} onClick={this.props.toggleSelectedTransaction} className="data-row">
+      <tr data-transaction-id={id} data-parent-id={t.parentID} onClick={this.props.toggleSelectedTransaction} className="data-row">
         <td className="date">{isRecurring ? recurrenceIcon : iconPlaceholder}{t.displayDate}</td>
         <td>{t.label ? t.label : "-"}</td>
         <td>{source ? source.label : "-"}</td>

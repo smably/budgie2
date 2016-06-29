@@ -1,12 +1,14 @@
 import React from 'react';
 import moment from 'moment/src/moment';
 
+import { DISPLAY_DATE_FORMAT } from '../data/constants.js';
+
 import TransactionRow from './transactionRow';
 
 class Transactions extends React.Component {
   static propTypes = {
     accounts: React.PropTypes.object,
-    transactions: React.PropTypes.array,
+    transactions: React.PropTypes.object,
     recurrences: React.PropTypes.object,
     getDisplayDate: React.PropTypes.func.isRequired,
     addTransactionCallback: React.PropTypes.func.isRequired,
@@ -41,39 +43,43 @@ class Transactions extends React.Component {
 
   // TODO: recurring transactions
   buildNewTransaction = () => {
-    let maxTransactionId = Math.max(...this.props.transactions.map(t => parseInt(t.id)));
+    let transactionIDs = [...this.props.transactions.keys()];
+    let maxTransactionId = Math.max(...transactionIDs.map(id => parseInt(id)));
 
-    let transactionId = String("0000" + (maxTransactionId + 1)).slice(-5);
+    let transactionID = String("0000" + (maxTransactionId + 1)).slice(-5);
     let amount = this.newTransactionAmountField.value.replace(/[^\d.-]/g, "");
     let date = moment(this.newTransactionDateField.value);
-    date = date.isValid() ? date.format('YYYY-MM-DD') + "T00:00:00.000Z" : null;
+    date = date.isValid() ? date.format("YYYY-MM-DD[T]00:00:00.000[Z]") : null;
 
-    return {
-      "id": transactionId,
-      "parentID": transactionId,
-      "amount": parseInt((amount * 100).toFixed()),
-      "source": this.newTransactionSourceField.value,
-      "sink": this.newTransactionDestinationField.value,
-      "label": this.newTransactionLabelField.value,
-      "date": date,
-      "displayDate": this.props.getDisplayDate(date)
-    };
+    return [
+      transactionID,
+      {
+        "parentID": transactionID,
+        "amount": parseInt((amount * 100).toFixed()),
+        "source": this.newTransactionSourceField.value,
+        "sink": this.newTransactionDestinationField.value,
+        "label": this.newTransactionLabelField.value,
+        "date": date,
+        "displayDate": this.props.getDisplayDate(date)
+      }
+    ];
   }
 
   validateAndAddTransaction = () => {
-    let newTransaction = this.buildNewTransaction();
+    let rawTransaction = this.buildNewTransaction();
+    let [, transaction] = rawTransaction;
 
-    let sourceExists = this.props.accounts.has(newTransaction.source);
-    let sinkExists = this.props.accounts.has(newTransaction.sink);
-    let sourceIsSource = sourceExists ? this.props.accounts.get(newTransaction.source).isSource : false;
-    let sinkIsSink = sinkExists ? this.props.accounts.get(newTransaction.sink).isSink : false;
+    let sourceExists = this.props.accounts.has(transaction.source);
+    let sinkExists = this.props.accounts.has(transaction.sink);
+    let sourceIsSource = sourceExists ? this.props.accounts.get(transaction.source).isSource : false;
+    let sinkIsSink = sinkExists ? this.props.accounts.get(transaction.sink).isSink : false;
 
-    if (!newTransaction.date) {
+    if (!transaction.date) {
       console.log("Error: invalid date");
       return;
     }
 
-    if (newTransaction.label === "") {
+    if (transaction.label === "") {
       console.log("Error: label cannot be blank");
       return;
     }
@@ -88,23 +94,25 @@ class Transactions extends React.Component {
       return;
     }
 
-    if (newTransaction.source === newTransaction.sink) {
+    if (transaction.source === transaction.sink) {
       console.log("Error: source and destination cannot be the same");
       return;
     }
 
-    if (newTransaction.amount <= 0) {
+    if (transaction.amount <= 0) {
       console.log("Error: invalid amount");
       return;
     }
 
-    this.props.addTransactionCallback(newTransaction);
+    this.props.addTransactionCallback(new Map([rawTransaction]));
   }
 
   getNewTransactionRow = () => {
-    let renderAccountOptions = filter => [...this.props.accounts]
-      .filter(([, account]) => filter(account))
-      .map(([id, account]) => <option key={id} value={id}>{account.label}</option>)
+    let renderAccountOptions = test => [...this.props.accounts].filter(
+      ([, account]) => test(account)
+    ).map(
+      ([id, account]) => <option key={id} value={id}>{account.label}</option>
+    );
 
     return (
       <tr id="newTransactionRow">
@@ -129,20 +137,10 @@ class Transactions extends React.Component {
   }
 
   render() {
-    let balance;
-
-    // TODO store balances for each account that has a balance
-    let startingTransaction = {
-      id: "00000_initial",
-      displayDate: "2016-01-01",
-      label: "Initial balance",
-      balances: {
-        primary: 0
-      }
-    };
-
-    let transactions = this.props.transactions.reduce((last, t) => {
-      balance = last[last.length - 1].balances.primary;
+    let lastTransaction, balance;
+    let accumulateBalances = (prev, [id, t]) => {
+      [, lastTransaction] = prev[prev.length - 1];
+      balance = lastTransaction.balances.primary;
 
       if (this.props.accounts.get(t.source).isPrimary) {
         balance -= t.amount;
@@ -154,8 +152,36 @@ class Transactions extends React.Component {
         primary: balance
       };
 
-      return [...last, t];
-    }, [startingTransaction]); // TODO initialize to startingBalance of primary
+      return [...prev, [id, t]];
+    };
+
+    let renderTransactionRow = ([id, t]) => (
+      <TransactionRow
+        key={id}
+        id={id}
+        transaction={t}
+        source={this.props.accounts.get(t.source)}
+        sink={this.props.accounts.get(t.sink)}
+        balances={{ primary: 0 }}
+        toggleSelectedTransaction={this.toggleSelectedTransaction} />
+    );
+
+    // TODO store balances for each account that has a balance
+    let startingTransaction = [
+      "00000_initial",
+      {
+        displayDate: "2016-01-01",
+        label: "Initial balance",
+        balances: {
+          primary: 0
+        }
+      }
+    ];
+
+    // TODO initialize to startingBalance of primary
+    let transactionRows = [...this.props.transactions]
+      .reduce(accumulateBalances, [startingTransaction])
+      .map(renderTransactionRow);
 
     return (
       <div>
@@ -173,15 +199,7 @@ class Transactions extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {transactions.map(t =>
-            <TransactionRow
-              key={t.id}
-              transaction={t}
-              source={this.props.accounts.get(t.source)}
-              sink={this.props.accounts.get(t.sink)}
-              balances={{ primary: 0 }}
-              toggleSelectedTransaction={this.toggleSelectedTransaction} />
-          )}
+          {transactionRows}
           {this.getNewTransactionRow()}
         </tbody>
         </table>

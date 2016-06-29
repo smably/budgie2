@@ -3,7 +3,7 @@ import React from 'react';
 class Accounts extends React.Component {
   static propTypes = {
     accounts: React.PropTypes.object.isRequired,
-    transactions: React.PropTypes.array.isRequired,
+    transactions: React.PropTypes.object.isRequired,
     addAccountCallback: React.PropTypes.func.isRequired,
     deleteAccountCallback: React.PropTypes.func.isRequired,
   }
@@ -90,7 +90,7 @@ class Accounts extends React.Component {
       isFromAccount = transaction => transaction.source === accountID;
       isToAccount = transaction => transaction.sink === accountID;
 
-      if (transactions.some(t => isFromAccount(t) || isToAccount(t))) {
+      if ([...transactions].some(([, t]) => isFromAccount(t) || isToAccount(t))) {
         skippedAccount = true;
         accountLabel = this.props.accounts.get(accountID).label;
         console.log(`Not deleting ${accountLabel}: account has transactions`)

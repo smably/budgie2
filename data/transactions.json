@@ -1,51 +1,72 @@
-{
-  "00001": {
-    "amount": 203570,
-    "source": "00005",
-    "sink": "00001",
-    "label": "Pay",
-    "recurrenceID": "00001"
-  },
-  "00002": {
-    "amount": 14000,
-    "source": "00001",
-    "sink": "00002",
-    "label": "To weekly spending",
-    "recurrenceID": "00002"
-  },
-  "00003": {
-    "amount": 42000,
-    "source": "00001",
-    "sink": "00004",
-    "label": "To RRSP",
-    "recurrenceID": "00001"
-  },
-  "00004": {
-    "amount": 42000,
-    "source": "00001",
-    "sink": "00003",
-    "label": "To travel and savings",
-    "recurrenceID": "00001"
-  },
-  "00005": {
-    "amount": 155000,
-    "source": "00001",
-    "sink": "00007",
-    "label": "Rent",
-    "recurrenceID": "00003"
-  },
-  "00006": {
-    "amount": 158500,
-    "source": "00003",
-    "sink": "00006",
-    "label": "Credit card payment",
-    "date": "2016-05-10T00:00:00.000Z"
-  },
-  "00007": {
-    "amount": 325908,
-    "source": "00003",
-    "sink": "00006",
-    "label": "Credit card payment",
-    "date": "2016-06-10T00:00:00.000Z"
-  }
-}
+[
+  [
+    "00001",
+    {
+      "amount": 203570,
+      "source": "00005",
+      "sink": "00001",
+      "label": "Pay",
+      "recurrenceID": "00001"
+    }
+  ],
+  [
+    "00002",
+    {
+      "amount": 14000,
+      "source": "00001",
+      "sink": "00002",
+      "label": "To weekly spending",
+      "recurrenceID": "00002"
+    }
+  ],
+  [
+    "00003",
+    {
+      "amount": 42000,
+      "source": "00001",
+      "sink": "00004",
+      "label": "To RRSP",
+      "recurrenceID": "00001"
+    }
+  ],
+  [
+    "00004",
+    {
+      "amount": 42000,
+      "source": "00001",
+      "sink": "00003",
+      "label": "To travel and savings",
+      "recurrenceID": "00001"
+    }
+  ],
+  [
+    "00005",
+    {
+      "amount": 155000,
+      "source": "00001",
+      "sink": "00007",
+      "label": "Rent",
+      "recurrenceID": "00003"
+    }
+  ],
+  [
+    "00006",
+    {
+      "amount": 158500,
+      "source": "00003",
+      "sink": "00006",
+      "label": "Credit card payment",
+      "date": "2016-05-10T00:00:00.000Z"
+    }
+  ],
+  [
+    "00007",
+    {
+      "amount": 325908,
+      "source": "00003",
+      "sink": "00006",
+      "label": "Credit card payment",
+      "date": "2016-06-10T00:00:00.000Z"
+    }
+  ]
+]
