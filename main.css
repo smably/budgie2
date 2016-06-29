@@ -27,6 +27,10 @@ html {
   color: #FFF;
 }
 
+#data tbody tr.selected:nth-child(even) {
+  background-color: #2E5C8A;
+}
+
 #data td {
   border: none;
   margin: 0;
