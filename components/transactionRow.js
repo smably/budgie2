@@ -13,10 +13,12 @@ class TransactionRow extends React.Component {
 
   render() {
     let t = this.props.transaction;
+    let isRecurring = t.parentID != t.id;
+    let recurrenceIcon = <svg className="icon"><use xlinkHref="#icon-repeat"></use></svg>;
 
     return (
       <tr data-transaction-id={t.id} data-parent-id={t.parentID} onClick={this.props.toggleSelectedTransaction} className="data-row">
-        <td>{t.displayDate}</td>
+        <td>{t.displayDate} {isRecurring ? recurrenceIcon : null}</td>
         <td>{t.label}</td>
         <td>{this.props.source.label}</td>
         <td>{this.props.sink.label}</td>

@@ -2,9 +2,22 @@ html {
   font: 14px sans-serif;
 }
 
+.icon {
+  display: inline-block;
+  height: 10px;
+  fill: currentColor;
+  vertical-align: middle;
+  width: 10px;
+}
+
+h1 {
+  margin-top: 0;
+}
+
 #data {
   border-collapse: collapse;
   font: 1rem 'Inconsolata', monospace;
+  line-height: 16px;
   margin: 20px 0 0 0;
   width: 960px;
 }
