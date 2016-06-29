@@ -123,13 +123,41 @@ class Transactions extends React.Component {
           </select>
         </td>
         <td><input type="text" placeholder="Amount" ref={ref => this.newTransactionAmountField = ref} /></td>
+        <td></td>
       </tr>
     );
   }
 
   render() {
-    let sourceAccount, sinkAccount;
-    let toggle = this.toggleSelectedTransaction;
+    let balance;
+
+    // TODO make initial balance row unselectable
+    let startingTransaction = {
+      id: "00000_initial",
+      displayDate: "2016-01-01",
+      label: "Initial balance",
+      balances: {
+        primary: 0
+      }
+    };
+
+    let transactions = this.props.transactions.reduce((last, t) => {
+      balance = last[last.length - 1].balances.primary;
+
+      if (this.props.accounts.get(t.source).isPrimary) {
+        balance -= t.amount;
+      } else if (this.props.accounts.get(t.sink).isPrimary) {
+        balance += t.amount;
+      }
+
+      t.balances = {
+        primary: balance
+      };
+
+      return [...last, t];
+    }, [startingTransaction]); // TODO initialize to startingBalance of primary
+
+    console.log(transactions);
 
     return (
       <div>
@@ -143,16 +171,18 @@ class Transactions extends React.Component {
             <td>From</td>
             <td>To</td>
             <td className="amount">Amount</td>
+            <td className="amount">Balance</td>
           </tr>
         </thead>
         <tbody>
-          {this.props.transactions.map(t =>
+          {transactions.map(t =>
             <TransactionRow
               key={t.id}
               transaction={t}
               source={this.props.accounts.get(t.source)}
               sink={this.props.accounts.get(t.sink)}
-              toggleSelectedTransaction={toggle} />
+              balances={{ primary: 0 }}
+              toggleSelectedTransaction={this.toggleSelectedTransaction} />
           )}
           {this.getNewTransactionRow()}
         </tbody>

@@ -12,7 +12,12 @@
     {
       "isSource": true,
       "isSink": true,
-      "label": "Primary Account"
+      "isPrimary": true,
+      "label": "Primary Account",
+      "initialBalance": {
+        "amount": 10000,
+        "date": "2016-04-29T00:00:00.000Z"
+      }
     }
   ],
   [
@@ -20,7 +25,11 @@
     {
       "isSource": true,
       "isSink": true,
-      "label": "Secondary Account"
+      "label": "Secondary Account",
+      "initialBalance": {
+        "amount": 0,
+        "date": "2016-04-29T00:00:00.000Z"
+      }
     }
   ],
   [

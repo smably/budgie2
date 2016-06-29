@@ -4,10 +4,14 @@ html {
 
 .icon {
   display: inline-block;
-  height: 10px;
   fill: currentColor;
+  height: 10px;
   vertical-align: middle;
   width: 10px;
+}
+
+.icon-repeat {
+  padding: 2px 6px 2px 0;
 }
 
 h1 {
@@ -37,6 +41,9 @@ h1 {
 
 #data tbody tr.selected {
   background-color: #336699;
+}
+
+#data tbody tr.selected td {
   color: #FFF;
 }
 
@@ -49,8 +56,34 @@ h1 {
   margin: 0;
 }
 
+td.date {
+  width: 115px;
+}
+
 td.amount {
   text-align: right;
+  width: 85px;
+}
+
+td.amount.pos,
+td.amount.neg {
+  font-weight: bold;
+}
+
+td.amount.pos {
+  color: #080;
+}
+
+td.amount.neg {
+  color: #800;
+}
+
+td.amount.pos:before {
+  content: "+";
+}
+
+td.amount.neg:before {
+  content: "-";
 }
 
 button {
