@@ -131,7 +131,7 @@ class Transactions extends React.Component {
   render() {
     let balance;
 
-    // TODO make initial balance row unselectable
+    // TODO store balances for each account that has a balance
     let startingTransaction = {
       id: "00000_initial",
       displayDate: "2016-01-01",
@@ -156,8 +156,6 @@ class Transactions extends React.Component {
 
       return [...last, t];
     }, [startingTransaction]); // TODO initialize to startingBalance of primary
-
-    console.log(transactions);
 
     return (
       <div>

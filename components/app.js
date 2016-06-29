@@ -23,8 +23,6 @@ class App extends React.Component {
   }
 
   addAccount = (newAccount) => {
-    console.log("in addAccount, newAccount=", newAccount);
-
     this.setState(oldState => {
       return {
         accounts: new Map([...oldState.accounts, ...newAccount])

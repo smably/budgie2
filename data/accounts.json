@@ -2,42 +2,81 @@
   [
     "00001",
     {
+      "label": "BMO Primary Account",
       "isSource": true,
-      "isSink": false,
-      "label": "Pay"
+      "isSink": true,
+      "isPrimary": true,
+      "hasBalance": true,
+      "initialBalance": {
+        "amount": 10000,
+        "date": "2016-01-01T00:00:00.000Z"
+      }
     }
   ],
   [
     "00002",
     {
+      "label": "BMO Weekly Spending Account",
       "isSource": true,
       "isSink": true,
-      "isPrimary": true,
-      "label": "Primary Account",
+      "hasBalance": true,
       "initialBalance": {
-        "amount": 10000,
-        "date": "2016-04-29T00:00:00.000Z"
+        "amount": 0,
+        "date": "2016-01-01T00:00:00.000Z"
       }
     }
   ],
   [
     "00003",
     {
+      "label": "BMO Savings and Travel Account",
       "isSource": true,
       "isSink": true,
-      "label": "Secondary Account",
+      "hasBalance": true,
       "initialBalance": {
         "amount": 0,
-        "date": "2016-04-29T00:00:00.000Z"
+        "date": "2016-01-01T00:00:00.000Z"
       }
     }
   ],
   [
     "00004",
     {
+      "label": "WealthSimple RRSP",
       "isSource": false,
       "isSink": true,
-      "label": "Citizens Bank Visa"
+      "hasBalance": true,
+      "initialBalance": {
+        "amount": 0,
+        "date": "2016-01-01T00:00:00.000Z"
+      }
+    }
+  ],
+  [
+    "00005",
+    {
+      "label": "eBay Payroll",
+      "isSource": true,
+      "isSink": false,
+      "hasBalance": false
+    }
+  ],
+  [
+    "00006",
+    {
+      "label": "Citizens Bank Visa",
+      "isSource": false,
+      "isSink": true,
+      "hasBalance": false
+    }
+  ],
+  [
+    "00007",
+    {
+      "label": "e-Transfer",
+      "isSource": true,
+      "isSink": true,
+      "hasBalance": false
     }
   ]
 ]
